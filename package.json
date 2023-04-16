@@ -1,0 +1,37 @@
+{
+  "name": "challenge-daily-diet-api",
+  "version": "1.0.0",
+  "description": "Challenge Daily Diet API",
+  "main": "index.js",
+  "license": "MIT",
+  "engines": {
+    "node": ">=18"
+  },
+  "scripts": {
+    "dev": "tsx watch src/server.ts",
+    "knex": "node --no-warnings --loader tsx ./node_modules/knex/bin/cli.js",
+    "lint": "eslint src --ext .ts --fix",
+    "test": "vitest",
+    "build": "tsup src --out-dir dist"
+  },
+  "dependencies": {
+    "dotenv": "^16.0.3",
+    "fastify": "^4.15.0",
+    "knex": "^2.4.2",
+    "pg": "^8.10.0",
+    "zod": "^3.21.4"
+  },
+  "devDependencies": {
+    "@rocketseat/eslint-config": "^1.2.0",
+    "@types/node": "^18.15.11",
+    "@types/supertest": "^2.0.12",
+    "eslint": "^8.38.0",
+    "eslint-config-prettier": "^8.8.0",
+    "sqlite3": "^5.1.6",
+    "supertest": "^6.3.3",
+    "tsup": "^6.7.0",
+    "tsx": "^3.12.6",
+    "typescript": "^5.0.4",
+    "vitest": "^0.30.1"
+  }
+}
