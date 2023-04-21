@@ -27,7 +27,7 @@ export const usersRoutes = async (app: FastifyInstance) => {
       user = result[0]
     }
 
-    reply.cookie('session_id', user.session_id as string)
+    reply.cookie('sessionId', user.session_id as string)
 
     reply.status(201).send({
       status: 'success',
