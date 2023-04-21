@@ -12,11 +12,11 @@ export const snacksRoutes = async (app: FastifyInstance) => {
     },
     async (request, reply) => {
       const sessionIdSchema = z.object({
-        session_id: z.string().uuid(),
+        sessionId: z.string().uuid(),
       })
 
-      const { session_id } = sessionIdSchema.parse(request.cookies)
-      const user = await knex('users').where({ session_id }).first()
+      const { sessionId } = sessionIdSchema.parse(request.cookies)
+      const user = await knex('users').where({ session_id: sessionId }).first()
 
       if (!user) {
         return reply.status(403).send({
@@ -29,9 +29,6 @@ export const snacksRoutes = async (app: FastifyInstance) => {
         .select()
         .count('snacks.id', {
           as: 'total',
-        })
-        .sum('snacks.on_diet', {
-          as: 'on_diet',
         })
 
         // Buscar apenas os snacks que não estão na dieta
@@ -46,6 +43,18 @@ export const snacksRoutes = async (app: FastifyInstance) => {
           as: 'not_on_diet',
         })
 
+        // Buscar apenas os snacks que estão na dieta
+        .with('snacks_on_diet', (qb) => {
+          qb.select('id').from('snacks').where({
+            user_id: user.id,
+            on_diet: true,
+          })
+        })
+        .leftJoin('snacks_on_diet', 'snacks_on_diet.id', 'snacks.id')
+        .count('snacks_on_diet.id', {
+          as: 'on_diet',
+        })
+
         // Buscar a melhor sequência de refeições dentro da dieta
         .with('best_sequence', (qb: Knex.QueryBuilder) => {
           qb.count('*', {
@@ -57,6 +66,7 @@ export const snacksRoutes = async (app: FastifyInstance) => {
                   this.orderBy('id').partitionBy('on_diet')
                 })
                 .from('snacks')
+                .as('t')
                 .where({
                   user_id: user.id,
                   on_diet: true,
@@ -68,8 +78,9 @@ export const snacksRoutes = async (app: FastifyInstance) => {
             .orderByRaw('count(*) desc')
             .limit(1)
         })
-        .join('best_sequence', '', '')
+        .join('best_sequence', knex.raw('1 = 1'))
         .select('best_sequence.count as best_sequence')
+        .groupBy('best_sequence.count')
 
         .where({
           user_id: user.id,
@@ -90,11 +101,11 @@ export const snacksRoutes = async (app: FastifyInstance) => {
     },
     async (request, reply) => {
       const sessionIdSchema = z.object({
-        session_id: z.string().uuid(),
+        sessionId: z.string().uuid(),
       })
 
-      const { session_id } = sessionIdSchema.parse(request.cookies)
-      const user = await knex('users').where({ session_id }).first()
+      const { sessionId } = sessionIdSchema.parse(request.cookies)
+      const user = await knex('users').where({ session_id: sessionId }).first()
 
       if (!user) {
         return reply.status(403).send({
@@ -137,11 +148,11 @@ export const snacksRoutes = async (app: FastifyInstance) => {
     },
     async (request, reply) => {
       const sessionIdSchema = z.object({
-        session_id: z.string().uuid(),
+        sessionId: z.string().uuid(),
       })
 
-      const { session_id } = sessionIdSchema.parse(request.cookies)
-      const user = await knex('users').where({ session_id }).first()
+      const { sessionId } = sessionIdSchema.parse(request.cookies)
+      const user = await knex('users').where({ session_id: sessionId }).first()
 
       if (!user) {
         return reply.status(403).send({
@@ -197,11 +208,11 @@ export const snacksRoutes = async (app: FastifyInstance) => {
     },
     async (request, reply) => {
       const sessionIdSchema = z.object({
-        session_id: z.string().uuid(),
+        sessionId: z.string().uuid(),
       })
 
-      const { session_id } = sessionIdSchema.parse(request.cookies)
-      const user = await knex('users').where({ session_id }).first()
+      const { sessionId } = sessionIdSchema.parse(request.cookies)
+      const user = await knex('users').where({ session_id: sessionId }).first()
 
       if (!user) {
         return reply.status(403).send({
@@ -238,11 +249,11 @@ export const snacksRoutes = async (app: FastifyInstance) => {
     },
     async (request, reply) => {
       const sessionIdSchema = z.object({
-        session_id: z.string().uuid(),
+        sessionId: z.string().uuid(),
       })
 
-      const { session_id } = sessionIdSchema.parse(request.cookies)
-      const user = await knex('users').where({ session_id }).first()
+      const { sessionId } = sessionIdSchema.parse(request.cookies)
+      const user = await knex('users').where({ session_id: sessionId }).first()
 
       if (!user) {
         return reply.status(403).send({
@@ -267,11 +278,11 @@ export const snacksRoutes = async (app: FastifyInstance) => {
     },
     async (request, reply) => {
       const sessionIdSchema = z.object({
-        session_id: z.string().uuid(),
+        sessionId: z.string().uuid(),
       })
 
-      const { session_id } = sessionIdSchema.parse(request.cookies)
-      const user = await knex('users').where({ session_id }).first()
+      const { sessionId } = sessionIdSchema.parse(request.cookies)
+      const user = await knex('users').where({ session_id: sessionId }).first()
 
       if (!user) {
         return reply.status(403).send({
